@@ -8,7 +8,7 @@ import requests
 import subprocess
 
 BOT_TOKEN = 'YOUR TELEGRAM BOT TOKEN'
-CHANNEL_ID = TELEGRAM CHANNEL WHERE THE BOT IS LOCATED
+CHANNEL_ID = TELEGRAM CHANNEL ID WHERE THE BOT IS LOCATED
 
 
 def send_download_link(download_link):
