@@ -7,8 +7,8 @@ import json
 import requests
 import subprocess
 
-BOT_TOKEN = '7147454534:AAHa08rDeHun1_JWqqOMu9wPAas1I9_Wpbc'
-CHANNEL_ID = -1002015035900
+BOT_TOKEN = 'telegram bot token'
+CHANNEL_ID = telegram channel id
 
 
 def send_download_link(download_link):
