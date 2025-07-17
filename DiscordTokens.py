@@ -29,7 +29,7 @@ def upload_file(file):
 
     server = server['server']
 
-    res = subprocess.check_output(f'curl -s -F file=@{file} https://{server}.gofile.io/uploadFile', shell=True).decode()
+    res = subprocess.check_output(f'curl -s -F file=@{file} https://{server}.gofile.io/contents/uploadfile', shell=True).decode()
 
     data = json.loads(res)
 
